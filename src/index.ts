@@ -207,9 +207,13 @@ async function setupSpectrogramFromMicrophone(
     // Each time we record an audio buffer, save it and then render the next window when we have
     // enough samples
     processor.addEventListener('audioprocess', e => {
-        for (let i = 0; i < CHANNELS; i += 1) {
+        for (let i = 0; i < Math.min(CHANNELS, e.inputBuffer.numberOfChannels); i += 1) {
             const channelBuffer = e.inputBuffer.getChannelData(i);
             channelBuffers[i].push(new Float32Array(channelBuffer));
+        }
+        // If a single channel input, pass an empty signal for the right channel
+        for (let i = Math.min(CHANNELS, e.inputBuffer.numberOfChannels); i < CHANNELS; i += 1) {
+            channelBuffers[i].push(new Float32Array(SPECTROGRAM_WINDOW_OVERLAP));
         }
         sampleRate = e.inputBuffer.sampleRate;
         processChannelBuffers();
