@@ -69,13 +69,18 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const formatHz = (hz: number) => {
-    if (hz < 1000) {
+    if (hz < 999.5) {
         return `${hz.toPrecision(3)} Hz`;
     }
     return `${(hz / 1000).toPrecision(3)} kHz`;
 };
 
-const formatPercentage = (value: number) => `${(value * 100).toPrecision(3)}%`;
+const formatPercentage = (value: number) => {
+    if (value * 100 >= 999.5) {
+        return `${(value * 100).toPrecision(4)}%`;
+    }
+    return `${(value * 100).toPrecision(3)}%`;
+};
 
 export type PlayState = 'stopped' | 'loading-file' | 'loading-mic' | 'playing';
 
