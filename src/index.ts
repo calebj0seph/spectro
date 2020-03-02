@@ -235,7 +235,13 @@ async function setupSpectrogramFromAudioFile(
     bufferCallback: (bufferData: SpectrogramBufferData[]) => Promise<Float32Array[]>,
     audioEndCallback: () => void
 ) {
-    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+    const audioBuffer = await new Promise<AudioBuffer>((resolve, reject) =>
+        audioCtx.decodeAudioData(
+            arrayBuffer,
+            buffer => resolve(buffer),
+            err => reject(err)
+        )
+    );
 
     let channelData: Float32Array[] = [];
     for (let i = 0; i < audioBuffer.numberOfChannels; i += 1) {
@@ -287,6 +293,7 @@ async function setupSpectrogramFromAudioFile(
     audioEventCallback();
 
     // Play audio
+    audioCtx.resume();
     source.start(0);
 
     // Return a function to stop rendering

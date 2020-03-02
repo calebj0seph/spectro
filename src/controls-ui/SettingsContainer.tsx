@@ -264,7 +264,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
                         <input
                             type="file"
                             style={{ display: 'none' }}
-                            accept="audio/*"
+                            accept="audio/x-m4a,audio/*"
                             onChange={onFileChange}
                             ref={fileRef}
                         />
