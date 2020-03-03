@@ -1,19 +1,33 @@
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
 import FormControl from '@material-ui/core/FormControl';
+import IconButton from '@material-ui/core/IconButton';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import Paper from '@material-ui/core/Paper';
 import ScopedCssBaseline from '@material-ui/core/ScopedCssBaseline';
 import Select from '@material-ui/core/Select';
+import Typography from '@material-ui/core/Typography';
 import pink from '@material-ui/core/colors/pink';
 import { ThemeProvider, createMuiTheme, makeStyles } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import AudiotrackIcon from '@material-ui/icons/Audiotrack';
 import ClearIcon from '@material-ui/icons/Clear';
+import CloseIcon from '@material-ui/icons/Close';
 import MicIcon from '@material-ui/icons/Mic';
+import SettingsIcon from '@material-ui/icons/Settings';
 import StopIcon from '@material-ui/icons/Stop';
-import clsx from 'clsx';
-import React, { ChangeEvent, useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import React, {
+    ChangeEvent,
+    MouseEvent,
+    useState,
+    useEffect,
+    useMemo,
+    useRef,
+    useCallback
+} from 'react';
 
 import { GRADIENTS } from '../color-util';
 import { hzToMel, melToHz } from '../math-util';
@@ -60,11 +74,35 @@ const useStyles = makeStyles(theme => ({
         marginTop: -12,
         marginLeft: -12
     },
-    button: {
-        width: '100%'
-    },
     lastButton: {
         marginBottom: theme.spacing(2)
+    },
+    closeButton: {
+        marginTop: -theme.spacing(1.5),
+        marginLeft: -theme.spacing(1.5),
+        width: theme.spacing(6)
+    },
+    settingsHeader: {
+        display: 'flex',
+        justifyContent: 'flex-start'
+    },
+    settingsButton: {
+        borderTopLeftRadius: theme.spacing(2),
+        borderTopRightRadius: theme.spacing(2),
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+        padding: `${theme.spacing(1.5)}px ${theme.spacing(3)}px`
+    },
+    settingsDrawer: {
+        backgroundColor: 'transparent'
+    },
+    settingsDrawerInner: {
+        borderTopLeftRadius: theme.spacing(2),
+        borderTopRightRadius: theme.spacing(2),
+        maxWidth: '300px',
+        padding: theme.spacing(2),
+        boxSizing: 'border-box',
+        margin: `${theme.spacing(2)}px auto 0 auto`
     }
 }));
 
@@ -115,6 +153,13 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
         };
 
         const classes = useStyles();
+        const isMobile = useMediaQuery('(max-width: 800px)');
+        const [settingsOpen, setSettingsOpen] = useState(false);
+
+        const openSettings = useCallback(() => setSettingsOpen(true), [setSettingsOpen]);
+        const closeSettings = useCallback(() => setSettingsOpen(false), [setSettingsOpen]);
+
+        const onInnerPaperClick = useCallback((e: MouseEvent) => e.stopPropagation(), []);
 
         const fileRef = useRef<HTMLInputElement | null>(null);
 
@@ -223,6 +268,10 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
             [onRenderParametersUpdate]
         );
 
+        useEffect(() => {
+            setPlayStateExport = setPlayState;
+        }, [setPlayState]);
+
         // Update all parameters on mount
         useEffect(() => {
             onSensitivityChange(defaultParameters.sensitivity);
@@ -238,147 +287,191 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
             }
         }, []);
 
-        useEffect(() => {
-            setPlayStateExport = setPlayState;
-        }, [setPlayState]);
+        const content = (
+            <>
+                <div className={classes.buttonContainer}>
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        onClick={onPlayMicrophoneClick}
+                        startIcon={<MicIcon />}
+                        disabled={playState !== 'stopped'}
+                    >
+                        Record from mic
+                    </Button>
+                    {playState === 'loading-mic' && (
+                        <CircularProgress size={24} className={classes.buttonProgress} />
+                    )}
+                </div>
+                <input
+                    type="file"
+                    style={{ display: 'none' }}
+                    accept="audio/x-m4a,audio/*"
+                    onChange={onFileChange}
+                    ref={fileRef}
+                />
+                <div className={classes.buttonContainer}>
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        onClick={onPlayFileClick}
+                        startIcon={<AudiotrackIcon />}
+                        disabled={playState !== 'stopped'}
+                    >
+                        Play audio file
+                    </Button>
+                    {playState === 'loading-file' && (
+                        <CircularProgress size={24} className={classes.buttonProgress} />
+                    )}
+                </div>
+
+                <Button
+                    fullWidth
+                    className={classes.lastButton}
+                    variant="outlined"
+                    color="secondary"
+                    onClick={onStopClick}
+                    startIcon={<StopIcon />}
+                    disabled={playState !== 'playing'}
+                >
+                    Stop
+                </Button>
+
+                <Divider className={classes.divider} />
+
+                <SensitivitySlider
+                    nameLabelId="sensitivity-slider-label"
+                    nameLabel="Sensitivity"
+                    min={0}
+                    max={1}
+                    step={0.001}
+                    defaultValue={defaultParameters.sensitivity}
+                    onChange={onSensitivityChange}
+                />
+                <ContrastSlider
+                    nameLabelId="contrast-slider-label"
+                    nameLabel="Contrast"
+                    min={0}
+                    max={1}
+                    step={0.001}
+                    defaultValue={defaultParameters.contrast}
+                    onChange={onContrastChange}
+                />
+                <ZoomSlider
+                    nameLabelId="zoom-slider-label"
+                    nameLabel="Zoom"
+                    min={1}
+                    max={10}
+                    step={0.01}
+                    defaultValue={defaultParameters.zoom}
+                    onChange={onZoomChange}
+                />
+                <MinFrequencySlider
+                    nameLabelId="min-freq-slider-label"
+                    nameLabel="Min. frequency"
+                    min={hzToMel(0)}
+                    max={hzToMel(20000)}
+                    step={1}
+                    defaultValue={hzToMel(defaultParameters.minFrequency)}
+                    onChange={onMinFreqChange}
+                />
+                <MaxFrequencySlider
+                    nameLabelId="max-freq-slider-label"
+                    nameLabel="Max. frequency"
+                    min={hzToMel(0)}
+                    max={hzToMel(20000)}
+                    step={1}
+                    defaultValue={hzToMel(defaultParameters.maxFrequency)}
+                    onChange={onMaxFreqChange}
+                />
+                <FormControl className={classes.select}>
+                    <InputLabel id="scale-select-label">Frequency scale</InputLabel>
+                    <Select
+                        labelId="scale-select-label"
+                        id="scale-select"
+                        defaultValue={defaultParameters.scale}
+                        onChange={onScaleChange}
+                    >
+                        <MenuItem value="mel">Mel</MenuItem>
+                        <MenuItem value="linear">Linear</MenuItem>
+                    </Select>
+                </FormControl>
+                <FormControl className={classes.select}>
+                    <InputLabel id="gradient-select-label">Colour</InputLabel>
+                    <Select
+                        labelId="gradient-select-label"
+                        id="gradient-select"
+                        defaultValue={defaultParameters.gradient}
+                        onChange={onGradientChange}
+                    >
+                        {GRADIENTS.map(g => (
+                            <MenuItem value={g.name} key={g.name}>
+                                {g.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                <Button
+                    fullWidth
+                    variant="text"
+                    color="secondary"
+                    onClick={onClearSpectrogram}
+                    startIcon={<ClearIcon />}
+                >
+                    Clear spectrogram
+                </Button>
+            </>
+        );
 
         return (
             <ThemeProvider theme={controlsTheme}>
                 <ScopedCssBaseline>
-                    <>
-                        <div className={classes.buttonContainer}>
+                    {isMobile ? (
+                        <>
                             <Button
-                                className={classes.button}
+                                size="large"
+                                className={classes.settingsButton}
                                 variant="contained"
                                 color="primary"
-                                onClick={onPlayMicrophoneClick}
-                                startIcon={<MicIcon />}
-                                disabled={playState !== 'stopped'}
+                                startIcon={<SettingsIcon />}
+                                onClick={openSettings}
+                                disableElevation
                             >
-                                Record from mic
+                                Settings
                             </Button>
-                            {playState === 'loading-mic' && (
-                                <CircularProgress size={24} className={classes.buttonProgress} />
-                            )}
-                        </div>
-                        <input
-                            type="file"
-                            style={{ display: 'none' }}
-                            accept="audio/x-m4a,audio/*"
-                            onChange={onFileChange}
-                            ref={fileRef}
-                        />
-                        <div className={classes.buttonContainer}>
-                            <Button
-                                className={classes.button}
-                                variant="contained"
-                                color="primary"
-                                onClick={onPlayFileClick}
-                                startIcon={<AudiotrackIcon />}
-                                disabled={playState !== 'stopped'}
+                            <Drawer
+                                anchor="bottom"
+                                open={settingsOpen}
+                                onClose={closeSettings}
+                                classes={{
+                                    paperAnchorBottom: classes.settingsDrawer
+                                }}
+                                PaperProps={{ elevation: 0, onClick: closeSettings }}
                             >
-                                Play audio file
-                            </Button>
-                            {playState === 'loading-file' && (
-                                <CircularProgress size={24} className={classes.buttonProgress} />
-                            )}
-                        </div>
-
-                        <Button
-                            className={clsx(classes.button, classes.lastButton)}
-                            variant="outlined"
-                            color="secondary"
-                            onClick={onStopClick}
-                            startIcon={<StopIcon />}
-                            disabled={playState !== 'playing'}
-                        >
-                            Stop
-                        </Button>
-
-                        <Divider className={classes.divider} />
-
-                        <SensitivitySlider
-                            nameLabelId="sensitivity-slider-label"
-                            nameLabel="Sensitivity"
-                            min={0}
-                            max={1}
-                            step={0.001}
-                            defaultValue={defaultParameters.sensitivity}
-                            onChange={onSensitivityChange}
-                        />
-                        <ContrastSlider
-                            nameLabelId="contrast-slider-label"
-                            nameLabel="Contrast"
-                            min={0}
-                            max={1}
-                            step={0.001}
-                            defaultValue={defaultParameters.contrast}
-                            onChange={onContrastChange}
-                        />
-                        <ZoomSlider
-                            nameLabelId="zoom-slider-label"
-                            nameLabel="Zoom"
-                            min={1}
-                            max={10}
-                            step={0.01}
-                            defaultValue={defaultParameters.zoom}
-                            onChange={onZoomChange}
-                        />
-                        <MinFrequencySlider
-                            nameLabelId="min-freq-slider-label"
-                            nameLabel="Min. frequency"
-                            min={hzToMel(0)}
-                            max={hzToMel(20000)}
-                            step={1}
-                            defaultValue={hzToMel(defaultParameters.minFrequency)}
-                            onChange={onMinFreqChange}
-                        />
-                        <MaxFrequencySlider
-                            nameLabelId="max-freq-slider-label"
-                            nameLabel="Max. frequency"
-                            min={hzToMel(0)}
-                            max={hzToMel(20000)}
-                            step={1}
-                            defaultValue={hzToMel(defaultParameters.maxFrequency)}
-                            onChange={onMaxFreqChange}
-                        />
-                        <FormControl className={classes.select}>
-                            <InputLabel id="scale-select-label">Frequency scale</InputLabel>
-                            <Select
-                                labelId="scale-select-label"
-                                id="scale-select"
-                                defaultValue={defaultParameters.scale}
-                                onChange={onScaleChange}
-                            >
-                                <MenuItem value="mel">Mel</MenuItem>
-                                <MenuItem value="linear">Linear</MenuItem>
-                            </Select>
-                        </FormControl>
-                        <FormControl className={classes.select}>
-                            <InputLabel id="gradient-select-label">Colour</InputLabel>
-                            <Select
-                                labelId="gradient-select-label"
-                                id="gradient-select"
-                                defaultValue={defaultParameters.gradient}
-                                onChange={onGradientChange}
-                            >
-                                {GRADIENTS.map(g => (
-                                    <MenuItem value={g.name} key={g.name}>
-                                        {g.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <Button
-                            className={classes.button}
-                            variant="text"
-                            color="secondary"
-                            onClick={onClearSpectrogram}
-                            startIcon={<ClearIcon />}
-                        >
-                            Clear spectrogram
-                        </Button>
-                    </>
+                                <Paper
+                                    classes={{ root: classes.settingsDrawerInner }}
+                                    elevation={16}
+                                    onClick={onInnerPaperClick}
+                                >
+                                    <div className={classes.settingsHeader}>
+                                        <IconButton
+                                            aria-label="close"
+                                            onClick={closeSettings}
+                                            className={classes.closeButton}
+                                        >
+                                            <CloseIcon />
+                                        </IconButton>
+                                        <Typography variant="subtitle1">Settings</Typography>
+                                    </div>
+                                    {content}
+                                </Paper>
+                            </Drawer>
+                        </>
+                    ) : (
+                        content
+                    )}
                 </ScopedCssBaseline>
             </ThemeProvider>
         );
