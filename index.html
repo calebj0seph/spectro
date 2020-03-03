@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Spectro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description"
         content="Real-time audio visualizer that generates spectrograms in your browser using WebGL. Visualise sound either from a microphone or an audio file on your device. Supports different color schemes and other customization options.">
     <meta property="og:type" content="website">
@@ -12,6 +12,7 @@
     <meta property="og:description"
         content="Real-time audio visualizer that generates spectrograms in your browser using WebGL. Visualise sound either from a microphone or an audio file on your device.">
     <meta name="twitter:card" content="summary">
+    <title>Spectro</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" rel="stylesheet">
     <style>
         body {
@@ -93,6 +94,23 @@
             flex: 0 0 auto;
             overflow-x: hidden;
             overflow-y: auto;
+        }
+
+        @media (max-width: 800px) {
+            .spectrograms .separator {
+                display: none;
+            }
+
+            .controls {
+                border-top-left-radius: 16px;
+                border-top-right-radius: 16px;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: 0;
+                width: auto;
+                padding: 0;
+            }
         }
     </style>
     <!-- Global site tag (gtag.js) - Google Analytics -->
