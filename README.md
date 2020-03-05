@@ -38,8 +38,7 @@ For example if you were to generate a spectrogram of yourself whistling, you wou
 The latest versions of Chrome, Firefox and Safari all work with Spectro. Any other Chromium based browser like the new version of Microsoft Edge should also work.
 
 ### How does Spectro work?
-I'm still working on an article to explain it all! Here's a quick overview:
-
+[Here's a blog post](/docs/making-of.md) describing it all! A quick overview:
 * The audio input is broken into frames of 4096 samples, which are overlapped every 1024 samples. I chose 4096 as my window size as it seemed to be the best trade-off between time and frequency resolution – eventually I might make it configurable.
 * These overlapping frames are then windowed using a [seven-term Blackman-Harris](https://dsp.stackexchange.com/questions/51095/seven-term-blackman-harris-window) function, which I decided on as it seemed to give the most visual clarity.
 * The windows are then run through a Fast Fourier transform (using [jsfft](https://github.com/dntj/jsfft)) in a dedicated web worker, and the norm of each frequency bin is taken as the basis of the spectrogram.
