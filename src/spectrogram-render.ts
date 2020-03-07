@@ -456,7 +456,7 @@ export class SpectrogramGPURenderer {
         this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, vertexBuffer);
         this.ctx.bufferData(
             this.ctx.ARRAY_BUFFER,
-            // (x, y, u ,v) tuples for each vertex
+            // (x, y, u, v) tuples for each vertex
             new Float32Array([
                 // v0
                 -1.0,
