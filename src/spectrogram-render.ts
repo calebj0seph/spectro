@@ -202,6 +202,8 @@ export class SpectrogramGPURenderer {
         this.ctx.uniform1f(this.program.spectrogramOffsetUniform, this.spectrogramOffset);
         this.ctx.uniform1f(this.program.spectrogramLengthUniform, this.spectrogramLength);
 
+        // Smoothing factor to make render parameter changes gradually interpolate to their new
+        // value
         const LERP_AMOUNT = 0.5;
         this.currentScaleRange = [
             stepTowards(this.currentScaleRange[0], this.scaleRange[0], LERP_AMOUNT),
@@ -212,7 +214,9 @@ export class SpectrogramGPURenderer {
             this.parameters!.contrast,
             LERP_AMOUNT
         );
-        if (this.currentContrast < 1.0) {
+        // Don't interpolate the contrast when it gets close toe 0 to avoid numerical instability in
+        // the shader
+        if (this.currentContrast < 0.05) {
             this.currentContrast = 0.0;
         }
         this.currentSensitivity = stepTowards(
@@ -452,19 +456,24 @@ export class SpectrogramGPURenderer {
         this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, vertexBuffer);
         this.ctx.bufferData(
             this.ctx.ARRAY_BUFFER,
+            // (x, y, u ,v) tuples for each vertex
             new Float32Array([
+                // v0
                 -1.0,
                 1.0,
                 0.0,
                 0.0,
+                // v1
                 -1.0,
                 -1.0,
                 0.0,
                 1.0,
+                // v2
                 1.0,
                 -1.0,
                 1.0,
                 1.0,
+                // v3
                 1.0,
                 1.0,
                 1.0,
