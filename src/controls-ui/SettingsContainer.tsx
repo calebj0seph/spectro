@@ -142,7 +142,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
         onRenderFromMicrophone,
         onRenderFromFile
     }: SettingsContainerProps) => {
-        const defaultParameters = {
+        const { current: defaultParameters } = useRef({
             sensitivity: 0.5,
             contrast: 0.5,
             zoom: 4,
@@ -150,7 +150,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
             maxFrequency: 12000,
             scale: 'mel' as Scale,
             gradient: 'Heated Metal'
-        };
+        });
 
         const classes = useStyles();
         const isMobile = useMediaQuery('(max-width: 800px)');
@@ -211,6 +211,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
         }, [setPlayState]);
         const onSensitivityChange = useCallback(
             (value: number) => {
+                defaultParameters.sensitivity = value;
                 const scaledValue = 10 ** (value * 3) - 1;
                 onRenderParametersUpdate({ sensitivity: scaledValue });
                 setSensitivity(formatPercentage(value));
@@ -219,6 +220,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
         );
         const onContrastChange = useCallback(
             (value: number) => {
+                defaultParameters.contrast = value;
                 const scaledValue = 10 ** (value * 6) - 1;
                 onRenderParametersUpdate({ contrast: scaledValue });
                 setContrast(formatPercentage(value));
@@ -227,6 +229,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
         );
         const onZoomChange = useCallback(
             (value: number) => {
+                defaultParameters.zoom = value;
                 onRenderParametersUpdate({ zoom: value });
                 setZoom(formatPercentage(value));
             },
@@ -235,6 +238,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
         const onMinFreqChange = useCallback(
             (value: number) => {
                 const hz = melToHz(value);
+                defaultParameters.minFrequency = hz;
                 onRenderParametersUpdate({ minFrequencyHz: hz });
                 setMinFrequency(formatHz(hz));
             },
@@ -243,6 +247,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
         const onMaxFreqChange = useCallback(
             (value: number) => {
                 const hz = melToHz(value);
+                defaultParameters.maxFrequency = hz;
                 onRenderParametersUpdate({ maxFrequencyHz: hz });
                 setMaxFrequency(formatHz(hz));
             },
@@ -251,6 +256,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
         const onScaleChange = useCallback(
             (event: ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
                 if (typeof event.target.value === 'string') {
+                    defaultParameters.scale = event.target.value as Scale;
                     onRenderParametersUpdate({ scale: event.target.value as Scale });
                 }
             },
@@ -261,6 +267,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
                 if (typeof event.target.value === 'string') {
                     const gradientData = GRADIENTS.find(g => g.name === event.target.value);
                     if (gradientData !== undefined) {
+                        defaultParameters.gradient = gradientData.name;
                         onRenderParametersUpdate({ gradient: gradientData.gradient });
                     }
                 }

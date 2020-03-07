@@ -33,7 +33,6 @@ const castSliderValue = (value: number | number[]) => {
 // label and updating it as the slider is dragged causes severe stuttering of the spectrogram due to
 // React taking CPU time re-rendering components.
 function generateLabelledSlider(): [LabelledSlider, (value: string) => void] {
-    let lastValue: number | null = null;
     let lastValueLabel: string = '';
     let span: HTMLSpanElement | null = null;
     const onSpanChange = (newSpan: HTMLSpanElement | null) => {
@@ -70,10 +69,7 @@ function generateLabelledSlider(): [LabelledSlider, (value: string) => void] {
         }, [valueLabelRef.current]);
 
         const changeCallback = useCallback(
-            (_: ChangeEvent<{}>, value: number | number[]) => {
-                lastValue = castSliderValue(value);
-                onChange(lastValue);
-            },
+            (_: ChangeEvent<{}>, value: number | number[]) => onChange(castSliderValue(value)),
             [onChange]
         );
 
@@ -90,7 +86,7 @@ function generateLabelledSlider(): [LabelledSlider, (value: string) => void] {
                     step={step}
                     min={min}
                     max={max}
-                    defaultValue={lastValue || defaultValue}
+                    defaultValue={defaultValue}
                     onChange={changeCallback}
                 />
             </>
