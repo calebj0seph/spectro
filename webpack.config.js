@@ -25,7 +25,15 @@ module.exports = {
             },
             {
                 test: /\.worker\.ts$/,
-                use: [{ loader: 'babel-loader' }, { loader: 'worker-loader' }],
+                use: [
+                    { loader: 'babel-loader' },
+                    {
+                        loader: 'worker-loader',
+                        options: {
+                            filename: '[contenthash].worker.js',
+                        },
+                    },
+                ],
             },
             {
                 test: /\.tsx?$/,
