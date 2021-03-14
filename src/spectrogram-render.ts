@@ -152,7 +152,7 @@ export class SpectrogramGPURenderer {
             zoomUniform: this.getUniformLocation(
                 program,
                 FragmentShader.uniforms.uZoom.variableName
-            )
+            ),
         };
 
         const [vertexBuffer, indexBuffer] = this.createFullscreenQuad();
@@ -207,7 +207,7 @@ export class SpectrogramGPURenderer {
         const LERP_AMOUNT = 0.5;
         this.currentScaleRange = [
             stepTowards(this.currentScaleRange[0], this.scaleRange[0], LERP_AMOUNT),
-            stepTowards(this.currentScaleRange[1], this.scaleRange[1], LERP_AMOUNT)
+            stepTowards(this.currentScaleRange[1], this.scaleRange[1], LERP_AMOUNT),
         ];
         this.currentContrast = stepTowards(
             this.currentContrast,
@@ -278,7 +278,7 @@ export class SpectrogramGPURenderer {
             sampleRate: merge(parameters.sampleRate, this.parameters?.sampleRate, 48000),
             windowSize: merge(parameters.windowSize, this.parameters?.windowSize, 4096),
             scale: merge(parameters.scale, this.parameters?.scale, 'mel'),
-            gradient: merge(parameters.gradient, this.parameters?.gradient, HEATED_METAL_GRADIENT)
+            gradient: merge(parameters.gradient, this.parameters?.gradient, HEATED_METAL_GRADIENT),
         };
 
         if (this.parameters === null || this.parameters.gradient !== newParameters.gradient) {
@@ -477,7 +477,7 @@ export class SpectrogramGPURenderer {
                 1.0,
                 1.0,
                 1.0,
-                0.0
+                0.0,
             ]),
             this.ctx.STATIC_DRAW
         );
@@ -542,7 +542,7 @@ export class SpectrogramGPURenderer {
             case 'mel':
                 this.scaleRange = [
                     Math.log(1 + minFrequencyHz / 700) / Math.log(1 + peakHz / 700),
-                    Math.log(1 + maxFrequencyHz / 700) / Math.log(1 + peakHz / 700)
+                    Math.log(1 + maxFrequencyHz / 700) / Math.log(1 + peakHz / 700),
                 ];
                 break;
             default:

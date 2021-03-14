@@ -4,6 +4,6 @@ module.exports = {
     rules: {
         'no-restricted-globals': ['error', 'isFinite', 'isNaN']
             .concat(restrictedGlobals)
-            .filter(global => global !== 'self')
-    }
+            .filter((global) => global !== 'self'),
+    },
 };

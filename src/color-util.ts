@@ -10,7 +10,7 @@ export const HEATED_METAL_GRADIENT: Gradient = [
     { stop: 0.3, color: [128, 0, 128] },
     { stop: 0.65, color: [255, 0, 0] },
     { stop: 0.9, color: [255, 255, 0] },
-    { stop: 1.0, color: [255, 255, 255] }
+    { stop: 1.0, color: [255, 255, 255] },
 ];
 
 // Taken from:
@@ -20,7 +20,7 @@ export const AUDACITY_GRADIENT: Gradient = [
     { stop: 0.25, color: [76, 153, 255] },
     { stop: 0.5, color: [229, 25, 229] },
     { stop: 0.75, color: [255, 0, 0] },
-    { stop: 1.0, color: [255, 255, 255] }
+    { stop: 1.0, color: [255, 255, 255] },
 ];
 
 export const SPECTRUM_GRADIENT: Gradient = [
@@ -28,42 +28,42 @@ export const SPECTRUM_GRADIENT: Gradient = [
     { stop: 0.25, color: [0, 160, 160] },
     { stop: 0.5, color: [0, 190, 0] },
     { stop: 0.75, color: [225, 225, 0] },
-    { stop: 1.0, color: [255, 0, 0] }
+    { stop: 1.0, color: [255, 0, 0] },
 ];
 
 export const BLACK_WHITE_GRADIENT: Gradient = [
     { stop: 0, color: [0, 0, 0] },
     { stop: 0.5, color: [119, 119, 119] },
-    { stop: 1.0, color: [255, 255, 255] }
+    { stop: 1.0, color: [255, 255, 255] },
 ];
 
 export const WHITE_BLACK_GRADIENT: Gradient = [
     { stop: 0, color: [255, 255, 255] },
     { stop: 0.5, color: [119, 119, 119] },
-    { stop: 1.0, color: [0, 0, 0] }
+    { stop: 1.0, color: [0, 0, 0] },
 ];
 
 export const GRADIENTS: { name: string; gradient: Gradient }[] = [
     {
         name: 'Heated Metal',
-        gradient: HEATED_METAL_GRADIENT
+        gradient: HEATED_METAL_GRADIENT,
     },
     {
         name: 'Audacity®',
-        gradient: AUDACITY_GRADIENT
+        gradient: AUDACITY_GRADIENT,
     },
     {
         name: 'Spectrum',
-        gradient: SPECTRUM_GRADIENT
+        gradient: SPECTRUM_GRADIENT,
     },
     {
         name: 'Black to White',
-        gradient: BLACK_WHITE_GRADIENT
+        gradient: BLACK_WHITE_GRADIENT,
     },
     {
         name: 'White to Black',
-        gradient: WHITE_BLACK_GRADIENT
-    }
+        gradient: WHITE_BLACK_GRADIENT,
+    },
 ];
 
 function addGamma(u: number): number {
@@ -97,16 +97,16 @@ function fLabInverse(t: number): number {
 }
 
 export function rgbToLab(r: number, g: number, b: number): [number, number, number] {
-    const [lR, lG, lB] = [r, g, b].map(u => removeGamma(u / 255));
+    const [lR, lG, lB] = [r, g, b].map((u) => removeGamma(u / 255));
     const [x, y, z] = [
         0.4124 * lR + 0.3576 * lG + 0.1805 * lB,
         0.2126 * lR + 0.7152 * lG + 0.0722 * lB,
-        0.0193 * lR + 0.1192 * lG + 0.9505 * lB
+        0.0193 * lR + 0.1192 * lG + 0.9505 * lB,
     ];
     return [
         116 * fLab(y / 100) - 16,
         500 * (fLab(x / 95.0489) - fLab(y / 100)),
-        200 * (fLab(y / 100) - fLab(z / 108.884))
+        200 * (fLab(y / 100) - fLab(z / 108.884)),
     ];
 }
 
@@ -114,14 +114,14 @@ export function labToRgb(l: number, a: number, b: number): [number, number, numb
     const [x, y, z] = [
         95.0489 * fLabInverse((l + 16) / 116 + a / 500),
         100 * fLabInverse((l + 16) / 116),
-        108.884 * fLabInverse((l + 16) / 116 - b / 200)
+        108.884 * fLabInverse((l + 16) / 116 - b / 200),
     ];
     const [lR, lG, lB] = [
         3.2406 * x - 1.5372 * y - 0.4986 * z,
         -0.9689 * x + 1.8758 * y + 0.0415 * z,
-        0.0557 * x - 0.204 * y + 1.057 * z
+        0.0557 * x - 0.204 * y + 1.057 * z,
     ];
-    return [lR, lG, lB].map(u => Math.floor(clamp(256 * addGamma(u), 0, 255))) as [
+    return [lR, lG, lB].map((u) => Math.floor(clamp(256 * addGamma(u), 0, 255))) as [
         number,
         number,
         number

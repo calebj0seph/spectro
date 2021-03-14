@@ -9,34 +9,29 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.json']
+        extensions: ['.ts', '.tsx', '.js', '.json'],
     },
     devServer: {
         contentBase: path.join(__dirname, 'dist'),
         compress: true,
-        port: 9000
+        port: 9000,
     },
     module: {
         rules: [
             {
                 test: /\.glsl$/,
                 exclude: /node_modules/,
-                use: [
-                    { loader: 'webpack-glsl-minify' },
-                ]
+                use: [{ loader: 'webpack-glsl-minify' }],
             },
             {
                 test: /\.worker\.ts$/,
-                use: [
-                    { loader: 'babel-loader' },
-                    { loader: 'worker-loader' }
-                ]
+                use: [{ loader: 'babel-loader' }, { loader: 'worker-loader' }],
             },
             {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader'
-            }
-        ]
-    }
+                loader: 'babel-loader',
+            },
+        ],
+    },
 };

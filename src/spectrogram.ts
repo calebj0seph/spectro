@@ -83,7 +83,7 @@ export function generateSpectrogram(
         maxFrequencyHz, // Largest frequency in Hz to calculate the spectrogram for
         sampleRate, // Sample rate of the audio
         scale = 'linear', // Scale of the returned spectrogram (can be 'linear' or 'mel')
-        scaleSize // Number of rows in the returned spectrogram
+        scaleSize, // Number of rows in the returned spectrogram
     }: SpectrogramOptions
 ): SpectrogramResult {
     if (minFrequencyHz === undefined) {
@@ -153,8 +153,8 @@ export function generateSpectrogram(
             maxFrequencyHz,
             sampleRate,
             scale,
-            scaleSize
+            scaleSize,
         },
-        spectrogram: result
+        spectrogram: result,
     };
 }

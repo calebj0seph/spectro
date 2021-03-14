@@ -26,7 +26,7 @@ async function startRenderingSpectrogram(): Promise<{
     // The canvases that will render the spectrogram for each audio channel
     const spectrogramCanvases = [
         document.querySelector('#leftSpectrogram') as HTMLCanvasElement | null,
-        document.querySelector('#rightSpectrogram') as HTMLCanvasElement | null
+        document.querySelector('#rightSpectrogram') as HTMLCanvasElement | null,
     ];
 
     // The callbacks for each spectrogram that will render the audio samples provided when called
@@ -35,7 +35,7 @@ async function startRenderingSpectrogram(): Promise<{
     // Set up the WebGL contexts for each spectrogram
     const spectrogramBuffers: Circular2DBuffer<Float32Array>[] = [];
     const renderers: SpectrogramGPURenderer[] = [];
-    spectrogramCanvases.forEach(canvas => {
+    spectrogramCanvases.forEach((canvas) => {
         if (canvas === null || canvas.parentElement === null) {
             return;
         }
@@ -62,14 +62,14 @@ async function startRenderingSpectrogram(): Promise<{
             async ({ buffer, start, length, sampleRate, isStart }: SpectrogramBufferData) => {
                 renderer.updateParameters({
                     windowSize: SPECTROGRAM_WINDOW_SIZE,
-                    sampleRate
+                    sampleRate,
                 });
 
                 const spectrogram = await offThreadGenerateSpectrogram(buffer, start, length, {
                     windowSize: SPECTROGRAM_WINDOW_SIZE,
                     windowStepSize: SPECTROGRAM_WINDOW_OVERLAP,
                     sampleRate,
-                    isStart
+                    isStart,
                 });
                 spectrogramBuffer.enqueue(spectrogram.spectrogram);
                 imageDirty = true;
@@ -133,7 +133,7 @@ async function startRenderingSpectrogram(): Promise<{
             for (let i = 0; i < renderers.length; i += 1) {
                 renderers[i].updateParameters(parameters);
             }
-        }
+        },
     };
 }
 
@@ -189,12 +189,12 @@ async function setupSpectrogramFromMicrophone(
         // Render the single merged buffer for each channel
         if (buffers.length > 0) {
             bufferCallbackPromise = bufferCallback(
-                buffers.map(buffer => ({
+                buffers.map((buffer) => ({
                     buffer,
                     start: 0,
                     length: buffer.length,
                     sampleRate: sampleRate!,
-                    isStart
+                    isStart,
                 }))
             );
             bufferCallbackPromise.then(() => {
@@ -206,7 +206,7 @@ async function setupSpectrogramFromMicrophone(
 
     // Each time we record an audio buffer, save it and then render the next window when we have
     // enough samples
-    processor.addEventListener('audioprocess', e => {
+    processor.addEventListener('audioprocess', (e) => {
         for (let i = 0; i < Math.min(CHANNELS, e.inputBuffer.numberOfChannels); i += 1) {
             const channelBuffer = e.inputBuffer.getChannelData(i);
             channelBuffers[i].push(new Float32Array(channelBuffer));
@@ -238,8 +238,8 @@ async function setupSpectrogramFromAudioFile(
     const audioBuffer = await new Promise<AudioBuffer>((resolve, reject) =>
         audioCtx.decodeAudioData(
             arrayBuffer,
-            buffer => resolve(buffer),
-            err => reject(err)
+            (buffer) => resolve(buffer),
+            (err) => reject(err)
         )
     );
 
@@ -271,7 +271,7 @@ async function setupSpectrogramFromAudioFile(
                     start: nextSample,
                     length: totalSamples,
                     sampleRate: audioBuffer.sampleRate,
-                    isStart: nextSample === 0
+                    isStart: nextSample === 0,
                 });
             }
 
@@ -311,7 +311,7 @@ let globalAudioCtx: AudioContext | null = null;
     const {
         bufferCallback,
         clearCallback,
-        updateRenderParameters
+        updateRenderParameters,
     } = await spectrogramCallbacksPromise;
     if (controlsContainer !== null) {
         let stopCallback: (() => void) | null = null;
@@ -333,7 +333,7 @@ let globalAudioCtx: AudioContext | null = null;
                     globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 }
                 setupSpectrogramFromMicrophone(globalAudioCtx, bufferCallback).then(
-                    callback => {
+                    (callback) => {
                         stopCallback = callback;
                         setPlayState('playing');
                     },
@@ -347,13 +347,13 @@ let globalAudioCtx: AudioContext | null = null;
                 setupSpectrogramFromAudioFile(globalAudioCtx, file, bufferCallback, () =>
                     setPlayState('stopped')
                 ).then(
-                    callback => {
+                    (callback) => {
                         stopCallback = callback;
                         setPlayState('playing');
                     },
                     () => setPlayState('stopped')
                 );
-            }
+            },
         });
     }
 })();

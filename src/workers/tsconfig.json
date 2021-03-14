@@ -2,20 +2,13 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "composite": true,
-        "lib": [
-            "esnext",
-            "webworker"
-        ]
+        "lib": ["esnext", "webworker"]
     },
     "references": [
         {
             "path": "../../"
         }
     ],
-    "include": [
-        "./"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+    "include": ["./"],
+    "exclude": ["node_modules"]
 }

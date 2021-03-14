@@ -8,23 +8,23 @@ const WORKER_POOL: { worker: HelperWorker; busy: boolean }[] = [];
 for (let i = 0; i < (window.navigator.hardwareConcurrency || 4); i += 1) {
     WORKER_POOL.push({
         worker: new HelperWorker(),
-        busy: false
+        busy: false,
     });
 }
 
 function getFreeWorker(): Promise<HelperWorker> {
-    const workerData = WORKER_POOL.find(w => !w.busy);
+    const workerData = WORKER_POOL.find((w) => !w.busy);
     if (workerData !== undefined) {
         workerData.busy = true;
         return Promise.resolve(workerData.worker);
     }
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         WORKER_QUEUE.push(resolve);
     });
 }
 
 function releaseWorker(worker: HelperWorker) {
-    const workerData = WORKER_POOL.find(w => w.worker === worker);
+    const workerData = WORKER_POOL.find((w) => w.worker === worker);
     if (workerData === undefined) {
         throw new Error('Provided worker to release is not valid');
     }
@@ -44,7 +44,7 @@ function queueTask<T extends Message>(
     transfer: Transferable[]
 ): Promise<Required<T['response']>['payload']> {
     return new Promise((resolve, reject) => {
-        getFreeWorker().then(worker => {
+        getFreeWorker().then((worker) => {
             const messageHandler = (event: { data: T['response'] }) => {
                 worker.removeEventListener('message', messageHandler);
                 releaseWorker(worker);
@@ -61,7 +61,7 @@ function queueTask<T extends Message>(
             worker.postMessage(
                 {
                     action,
-                    payload
+                    payload,
                 },
                 transfer
             );
@@ -83,14 +83,14 @@ export async function offThreadGenerateSpectrogram(
         spectrogramWindowCount,
         spectrogramOptions,
         spectrogramBuffer,
-        inputBuffer
+        inputBuffer,
     } = await queueTask<ComputeSpectrogramMessage>(
         ACTION_COMPUTE_SPECTROGRAM,
         {
             samplesBuffer: samples.buffer,
             samplesStart,
             samplesLength,
-            options
+            options,
         },
         [samples.buffer]
     );
@@ -99,6 +99,6 @@ export async function offThreadGenerateSpectrogram(
         windowCount: spectrogramWindowCount,
         options: spectrogramOptions,
         spectrogram: new Float32Array(spectrogramBuffer),
-        input: new Float32Array(inputBuffer)
+        input: new Float32Array(inputBuffer),
     };
 }

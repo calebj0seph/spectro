@@ -2,12 +2,12 @@ import { generateSpectrogram } from '../spectrogram';
 import {
     ACTION_COMPUTE_SPECTROGRAM,
     ComputeSpectrogramMessage,
-    Message
+    Message,
 } from '../worker-constants';
 
 self.addEventListener('message', (event: { data: Message['request'] }) => {
     const {
-        data: { action, payload }
+        data: { action, payload },
     } = event;
 
     switch (action) {
@@ -16,7 +16,7 @@ self.addEventListener('message', (event: { data: Message['request'] }) => {
                 samplesBuffer,
                 samplesStart,
                 samplesLength,
-                options
+                options,
             } = payload as ComputeSpectrogramMessage['request']['payload'];
 
             try {
@@ -24,7 +24,7 @@ self.addEventListener('message', (event: { data: Message['request'] }) => {
                 const {
                     windowCount: spectrogramWindowCount,
                     options: spectrogramOptions,
-                    spectrogram
+                    spectrogram,
                 } = generateSpectrogram(samples, samplesStart, samplesLength, options);
 
                 const response: ComputeSpectrogramMessage['response'] = {
@@ -32,8 +32,8 @@ self.addEventListener('message', (event: { data: Message['request'] }) => {
                         spectrogramWindowCount,
                         spectrogramOptions,
                         spectrogramBuffer: spectrogram.buffer,
-                        inputBuffer: samples.buffer
-                    }
+                        inputBuffer: samples.buffer,
+                    },
                 };
                 self.postMessage(response, [spectrogram.buffer, samples.buffer]);
             } catch (error) {
@@ -45,7 +45,7 @@ self.addEventListener('message', (event: { data: Message['request'] }) => {
         }
         default:
             self.postMessage({
-                error: new Error('Unknown action')
+                error: new Error('Unknown action'),
             });
             break;
     }

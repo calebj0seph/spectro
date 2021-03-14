@@ -8,21 +8,13 @@
         "noEmit": true,
         "strict": true,
         "target": "esnext",
-        "typeRoots": [
-            "src/types",
-            "node_modules/@types"
-        ]
+        "typeRoots": ["src/types", "node_modules/@types"]
     },
     "references": [
         {
             "path": "src/workers"
         }
     ],
-    "include": [
-        "src"
-    ],
-    "exclude": [
-        "node_modules",
-        "src/workers"
-    ]
+    "include": ["src"],
+    "exclude": ["node_modules", "src/workers"]
 }

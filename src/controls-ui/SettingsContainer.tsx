@@ -26,7 +26,7 @@ import React, {
     useEffect,
     useMemo,
     useRef,
-    useCallback
+    useCallback,
 } from 'react';
 
 import { GRADIENTS } from '../color-util';
@@ -41,30 +41,30 @@ const controlsTheme = createMuiTheme({
         type: 'dark',
         background: {
             default: '#101010',
-            paper: '#222222'
+            paper: '#222222',
         },
         primary: {
-            main: '#ffffff'
+            main: '#ffffff',
         },
-        secondary: pink
-    }
+        secondary: pink,
+    },
 });
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     select: {
         width: '100%',
-        marginBottom: theme.spacing(2)
+        marginBottom: theme.spacing(2),
     },
     sliderLabelContainer: {
         display: 'flex',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
     },
     divider: {
-        marginBottom: theme.spacing(2)
+        marginBottom: theme.spacing(2),
     },
     buttonContainer: {
         position: 'relative',
-        marginBottom: theme.spacing(1)
+        marginBottom: theme.spacing(1),
     },
     buttonProgress: {
         color: pink[500],
@@ -72,29 +72,29 @@ const useStyles = makeStyles(theme => ({
         top: '50%',
         left: '50%',
         marginTop: -12,
-        marginLeft: -12
+        marginLeft: -12,
     },
     lastButton: {
-        marginBottom: theme.spacing(2)
+        marginBottom: theme.spacing(2),
     },
     closeButton: {
         marginTop: -theme.spacing(1.5),
         marginLeft: -theme.spacing(1.5),
-        width: theme.spacing(6)
+        width: theme.spacing(6),
     },
     settingsHeader: {
         display: 'flex',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
     },
     settingsButton: {
         borderTopLeftRadius: theme.spacing(2),
         borderTopRightRadius: theme.spacing(2),
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
-        padding: `${theme.spacing(1.5)}px ${theme.spacing(3)}px`
+        padding: `${theme.spacing(1.5)}px ${theme.spacing(3)}px`,
     },
     settingsDrawer: {
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
     },
     settingsDrawerInner: {
         borderTopLeftRadius: theme.spacing(2),
@@ -102,8 +102,8 @@ const useStyles = makeStyles(theme => ({
         maxWidth: '300px',
         padding: theme.spacing(2),
         boxSizing: 'border-box',
-        margin: `${theme.spacing(2)}px auto 0 auto`
-    }
+        margin: `${theme.spacing(2)}px auto 0 auto`,
+    },
 }));
 
 const formatHz = (hz: number) => {
@@ -140,7 +140,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
         onClearSpectrogram,
         onRenderParametersUpdate,
         onRenderFromMicrophone,
-        onRenderFromFile
+        onRenderFromFile,
     }: SettingsContainerProps) => {
         const { current: defaultParameters } = useRef({
             sensitivity: 0.5,
@@ -149,7 +149,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
             minFrequency: 10,
             maxFrequency: 12000,
             scale: 'mel' as Scale,
-            gradient: 'Heated Metal'
+            gradient: 'Heated Metal',
         });
 
         const classes = useStyles();
@@ -265,7 +265,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
         const onGradientChange = useCallback(
             (event: ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
                 if (typeof event.target.value === 'string') {
-                    const gradientData = GRADIENTS.find(g => g.name === event.target.value);
+                    const gradientData = GRADIENTS.find((g) => g.name === event.target.value);
                     if (gradientData !== undefined) {
                         defaultParameters.gradient = gradientData.name;
                         onRenderParametersUpdate({ gradient: gradientData.gradient });
@@ -288,7 +288,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
             onMaxFreqChange(hzToMel(defaultParameters.maxFrequency));
             onRenderParametersUpdate({ scale: defaultParameters.scale });
 
-            const gradientData = GRADIENTS.find(g => g.name === defaultParameters.gradient);
+            const gradientData = GRADIENTS.find((g) => g.name === defaultParameters.gradient);
             if (gradientData !== undefined) {
                 onRenderParametersUpdate({ gradient: gradientData.gradient });
             }
@@ -413,7 +413,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
                         defaultValue={defaultParameters.gradient}
                         onChange={onGradientChange}
                     >
-                        {GRADIENTS.map(g => (
+                        {GRADIENTS.map((g) => (
                             <MenuItem value={g.name} key={g.name}>
                                 {g.name}
                             </MenuItem>
@@ -453,7 +453,7 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
                                 open={settingsOpen}
                                 onClose={closeSettings}
                                 classes={{
-                                    paperAnchorBottom: classes.settingsDrawer
+                                    paperAnchorBottom: classes.settingsDrawer,
                                 }}
                                 PaperProps={{ elevation: 0, onClick: closeSettings }}
                             >
@@ -486,13 +486,13 @@ function generateSettingsContainer(): [SettingsContainer, (playState: PlayState)
 
     return [
         SettingsContainer,
-        playState => {
+        (playState) => {
             if (setPlayStateExport !== null) {
                 setPlayStateExport(playState);
             } else {
                 throw new Error('Attempt to set play state before component mount');
             }
-        }
+        },
     ];
 }
 

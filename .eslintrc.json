@@ -1,32 +1,16 @@
 {
-    "extends": [
-        "airbnb-typescript",
-        "prettier",
-        "prettier/react",
-        "prettier/@typescript-eslint"
-    ],
+    "extends": ["airbnb-typescript", "prettier", "prettier/react", "prettier/@typescript-eslint"],
     "parserOptions": {
         "project": "./tsconfig.eslint.json"
     },
-    "plugins": [
-        "prettier"
-    ],
+    "plugins": ["prettier"],
     "rules": {
-        "prettier/prettier": [
-            "error"
-        ],
+        "prettier/prettier": ["error"],
         "no-param-reassign": "off",
         "import/order": [
             "error",
             {
-                "groups": [
-                    "builtin",
-                    "external",
-                    "internal",
-                    "parent",
-                    "sibling",
-                    "index"
-                ],
+                "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
                 "newlines-between": "always-and-inside-groups",
                 "alphabetize": {
                     "order": "asc",

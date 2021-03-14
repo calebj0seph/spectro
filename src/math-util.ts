@@ -44,7 +44,7 @@ const BLACKMAN_HARRIS_COEFFICIENTS: number[] = [
     -0.06592544638803,
     0.01081174209837,
     -0.00077658482522,
-    0.00001388721735
+    0.00001388721735,
 ];
 
 export function blackmanHarris(n: number, samples: number): number {

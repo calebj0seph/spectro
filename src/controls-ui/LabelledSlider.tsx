@@ -6,8 +6,8 @@ import React, { ChangeEvent, useCallback, useRef, useEffect } from 'react';
 const useStyles = makeStyles(() => ({
     sliderLabelContainer: {
         display: 'flex',
-        justifyContent: 'space-between'
-    }
+        justifyContent: 'space-between',
+    },
 }));
 
 export interface LabelledSliderProps {
@@ -59,7 +59,7 @@ function generateLabelledSlider(): [LabelledSlider, (value: string) => void] {
         max,
         step = 1,
         defaultValue,
-        onChange
+        onChange,
     }: LabelledSliderProps) => {
         const classes = useStyles();
 
@@ -98,7 +98,7 @@ function generateLabelledSlider(): [LabelledSlider, (value: string) => void] {
         (value: string) => {
             lastValueLabel = value;
             onSpanChange(span);
-        }
+        },
     ];
 }
 
