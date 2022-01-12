@@ -13,6 +13,15 @@ export const HEATED_METAL_GRADIENT: Gradient = [
     { stop: 1.0, color: [255, 255, 255] },
 ];
 
+// https://waldyrious.net/viridis-palette-generator/
+export const VIRIDIS_GRADIENT: Gradient = [
+    { stop: 0, color: [68, 1, 84] },
+    { stop: 0.25, color: [59, 82, 139] },
+    { stop: 0.5, color: [33, 145, 140] },
+    { stop: 0.75, color: [94, 201, 98] },
+    { stop: 1.0, color: [253, 231, 37] },
+];
+
 // Taken from:
 // https://github.com/audacity/audacity/blob/0c44d0f7d31139ec6e9acb13ee246238a4863968/src/AllThemeResources.h#L361-L365
 export const AUDACITY_GRADIENT: Gradient = [
@@ -51,6 +60,10 @@ export const GRADIENTS: { name: string; gradient: Gradient }[] = [
     {
         name: 'Audacity®',
         gradient: AUDACITY_GRADIENT,
+    },
+    {
+        name: 'Viridis',
+        gradient: VIRIDIS_GRADIENT,
     },
     {
         name: 'Spectrum',
